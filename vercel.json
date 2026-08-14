@@ -1,11 +1,11 @@
 {
   "version": 2,
   "builds": [
-    { "src": "frontend/**", "use": "@vercel/static" },
-    { "src": "api/app.py", "use": "@vercel/python" }
+    { "src": "frontend/**", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/(predict|metrics|features|regions|forecast)(/.*)?", "dest": "api/app.py" },
-    { "src": "/(.*)", "dest": "frontend/$1" }
+    { "src": "/", "dest": "/frontend/index.html" },
+    { "src": "/frontend(/)?", "dest": "/frontend/index.html" },
+    { "src": "/frontend/(.*)", "dest": "/frontend/$1" }
   ]
 }

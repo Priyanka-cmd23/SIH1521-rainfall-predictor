@@ -1,0 +1,10 @@
+# Full local development: data pipeline + model + tests
+# (Vercel only installs requirements.txt, so training-only deps live here)
+-r requirements.txt
+pandas
+shap
+xarray
+netcdf4
+pytest
+httpx
+scikit-learn

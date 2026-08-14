@@ -1,0 +1,99 @@
+{
+  "metrics": {
+    "threshold_prediction": 0.5,
+    "heavy_rain_threshold_mm": 64.5,
+    "val": {
+      "accuracy": 0.9421451471874089,
+      "precision": 0.23701942132382084,
+      "recall": 0.9088145896656535,
+      "f1": 0.3759823954731217,
+      "roc_auc": 0.9258057258324702,
+      "pod": 0.9088145896656535,
+      "far": 0.7629805786761792,
+      "csi": 0.23151374370886565,
+      "confusion_matrix": {
+        "tn": 31727,
+        "fp": 1925,
+        "fn": 60,
+        "tp": 598
+      },
+      "n": 34310,
+      "n_heavy": 658
+    },
+    "test": {
+      "accuracy": 0.930465407340571,
+      "precision": 0.3590177815410669,
+      "recall": 0.9151079136690647,
+      "f1": 0.5157105209811473,
+      "roc_auc": 0.9231104223909979,
+      "pod": 0.9151079136690647,
+      "far": 0.6409822184589331,
+      "csi": 0.3474460529909861,
+      "confusion_matrix": {
+        "tn": 30696,
+        "fp": 2271,
+        "fn": 118,
+        "tp": 1272
+      },
+      "n": 34357,
+      "n_heavy": 1390
+    }
+  },
+  "global_shap": {
+    "base_value": 0.10206785798072815,
+    "importance": [
+      {
+        "feature": "rain_lag1",
+        "importance": 2.070880174636841
+      },
+      {
+        "feature": "relative_humidity",
+        "importance": 1.5065561532974243
+      },
+      {
+        "feature": "cloud_cover",
+        "importance": 0.9086164832115173
+      },
+      {
+        "feature": "dew_point",
+        "importance": 0.485733300447464
+      },
+      {
+        "feature": "surface_pressure",
+        "importance": 0.36991918087005615
+      },
+      {
+        "feature": "day_of_year",
+        "importance": 0.3327281177043915
+      },
+      {
+        "feature": "temp_max",
+        "importance": 0.26237234473228455
+      },
+      {
+        "feature": "temp_min",
+        "importance": 0.1981542408466339
+      },
+      {
+        "feature": "wind_speed_mean",
+        "importance": 0.19258520007133484
+      },
+      {
+        "feature": "wind_direction",
+        "importance": 0.17198969423770905
+      },
+      {
+        "feature": "wind_gust",
+        "importance": 0.1466417759656906
+      },
+      {
+        "feature": "wind_speed_max",
+        "importance": 0.11776085197925568
+      },
+      {
+        "feature": "temp_mean",
+        "importance": 0.1134810522198677
+      }
+    ]
+  }
+}

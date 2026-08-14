@@ -5,3 +5,4 @@ data/raw/
 data/processed/rainfall_dataset.csv
 data/processed/split/
 .pytest_cache/
+.vercel

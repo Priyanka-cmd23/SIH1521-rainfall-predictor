@@ -138,7 +138,8 @@ and a clearly-labelled **INSAT-3D/3DR Integration Ready** section.
 cd C:\Users\radhi\rainfall-predictor
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt      # install everything
+python -m pip install -r requirements-dev.txt   # full dev stack (data + model + API)
+# deployment-only (Vercel uses just this): python -m pip install -r requirements.txt
 
 # 1. build the dataset (skips files already downloaded)
 python src\data\download_imd_rainfall.py

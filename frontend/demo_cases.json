@@ -1,0 +1,263 @@
+{
+  "heavy_rain_day": {
+    "prediction": "HEAVY RAINFALL",
+    "probability": 0.7675,
+    "risk_level": "HIGH",
+    "reliability": {
+      "probability": 0.7675,
+      "prediction": 1,
+      "label": "HEAVY RAINFALL",
+      "confidence": "MEDIUM",
+      "ood_score": 0.951,
+      "ood_flag": false,
+      "reliability": "MEDIUM",
+      "reasons": [
+        "Input lies within the training-data range and the model is confident"
+      ],
+      "disclaimer": "Reliability is a heuristic confidence indicator, not a scientifically calibrated probability of correctness."
+    },
+    "explanation": [
+      {
+        "feature": "relative_humidity",
+        "label": "Near-surface moisture - the direct fuel for heavy rainfall....",
+        "value": 92.0,
+        "shap": 0.6361,
+        "direction": "increased",
+        "impact": "pushed towards heavy rain"
+      },
+      {
+        "feature": "rain_lag1",
+        "label": "Persistence - a wet day is often followed by another wet day...",
+        "value": 30.37,
+        "shap": 0.5047,
+        "direction": "increased",
+        "impact": "pushed towards heavy rain"
+      },
+      {
+        "feature": "day_of_year",
+        "label": "Captures monsoon seasonality (June-September peak)....",
+        "value": 164.0,
+        "shap": 0.433,
+        "direction": "increased",
+        "impact": "pushed towards heavy rain"
+      },
+      {
+        "feature": "surface_pressure",
+        "label": "Low pressure means converging, rising air that produces clou...",
+        "value": 1006.2,
+        "shap": 0.3704,
+        "direction": "increased",
+        "impact": "pushed towards heavy rain"
+      },
+      {
+        "feature": "wind_direction",
+        "label": "South-westerly flow = monsoon moisture push; land/sea flow m...",
+        "value": 209.0,
+        "shap": -0.3624,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      },
+      {
+        "feature": "temp_max",
+        "label": "Daily peak heating drives afternoon convection and storm gro...",
+        "value": 29.6,
+        "shap": -0.3197,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      },
+      {
+        "feature": "wind_speed_mean",
+        "label": "Transports moist ocean air into the region (monsoon flow)....",
+        "value": 15.0,
+        "shap": 0.1075,
+        "direction": "increased",
+        "impact": "pushed towards heavy rain"
+      },
+      {
+        "feature": "temp_mean",
+        "label": "Air temperature; warm air holds more moisture available to r...",
+        "value": 27.2,
+        "shap": -0.0674,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      }
+    ],
+    "model_agreement_std": 0.0341,
+    "heavy_rain_threshold_mm": 64.5,
+    "disclaimer": "Prototype built on public IMD/ERA5 data (2001-2020, Konkan coast). Not an operational ISRO forecasting system."
+  },
+  "normal_day": {
+    "prediction": "NO HEAVY RAINFALL",
+    "probability": 0.0001,
+    "risk_level": "LOW",
+    "reliability": {
+      "probability": 0.0001,
+      "prediction": 0,
+      "label": "NO HEAVY RAINFALL",
+      "confidence": "HIGH",
+      "ood_score": 1.12,
+      "ood_flag": false,
+      "reliability": "HIGH",
+      "reasons": [
+        "Input lies within the training-data range and the model is confident"
+      ],
+      "disclaimer": "Reliability is a heuristic confidence indicator, not a scientifically calibrated probability of correctness."
+    },
+    "explanation": [
+      {
+        "feature": "relative_humidity",
+        "label": "Near-surface moisture - the direct fuel for heavy rainfall....",
+        "value": 48.0,
+        "shap": -3.0926,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      },
+      {
+        "feature": "rain_lag1",
+        "label": "Persistence - a wet day is often followed by another wet day...",
+        "value": 0.0,
+        "shap": -1.9263,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      },
+      {
+        "feature": "cloud_cover",
+        "label": "Pre-monsoon/convective cloud build-up precedes heavy rain....",
+        "value": 11.0,
+        "shap": -1.9221,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      },
+      {
+        "feature": "dew_point",
+        "label": "Absolute moisture content of the air, independent of heating...",
+        "value": 12.3,
+        "shap": -1.4413,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      },
+      {
+        "feature": "temp_max",
+        "label": "Daily peak heating drives afternoon convection and storm gro...",
+        "value": 33.9,
+        "shap": -0.4609,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      },
+      {
+        "feature": "temp_min",
+        "label": "Night-time minimum relates to humidity build-up and stabilit...",
+        "value": 18.7,
+        "shap": -0.3113,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      },
+      {
+        "feature": "wind_speed_max",
+        "label": "Peak wind bursts signal active convective (storm) cells....",
+        "value": 10.1,
+        "shap": 0.3098,
+        "direction": "increased",
+        "impact": "pushed towards heavy rain"
+      },
+      {
+        "feature": "day_of_year",
+        "label": "Captures monsoon seasonality (June-September peak)....",
+        "value": 1.0,
+        "shap": -0.3084,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      }
+    ],
+    "model_agreement_std": 0.0,
+    "heavy_rain_threshold_mm": 64.5,
+    "disclaimer": "Prototype built on public IMD/ERA5 data (2001-2020, Konkan coast). Not an operational ISRO forecasting system."
+  },
+  "unusual_oceanic_input": {
+    "prediction": "NO HEAVY RAINFALL",
+    "probability": 0.0,
+    "risk_level": "LOW",
+    "reliability": {
+      "probability": 0.0,
+      "prediction": 0,
+      "label": "NO HEAVY RAINFALL",
+      "confidence": "MEDIUM",
+      "ood_score": 2.109,
+      "ood_flag": true,
+      "reliability": "MEDIUM",
+      "reasons": [
+        "Input conditions are unusual compared with the training data"
+      ],
+      "disclaimer": "Reliability is a heuristic confidence indicator, not a scientifically calibrated probability of correctness."
+    },
+    "explanation": [
+      {
+        "feature": "relative_humidity",
+        "label": "Near-surface moisture - the direct fuel for heavy rainfall....",
+        "value": 5.0,
+        "shap": -3.0588,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      },
+      {
+        "feature": "rain_lag1",
+        "label": "Persistence - a wet day is often followed by another wet day...",
+        "value": 0.0,
+        "shap": -1.92,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      },
+      {
+        "feature": "cloud_cover",
+        "label": "Pre-monsoon/convective cloud build-up precedes heavy rain....",
+        "value": 11.0,
+        "shap": -1.8448,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      },
+      {
+        "feature": "dew_point",
+        "label": "Absolute moisture content of the air, independent of heating...",
+        "value": 12.3,
+        "shap": -1.3277,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      },
+      {
+        "feature": "temp_mean",
+        "label": "Air temperature; warm air holds more moisture available to r...",
+        "value": 45.0,
+        "shap": -0.4485,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      },
+      {
+        "feature": "temp_min",
+        "label": "Night-time minimum relates to humidity build-up and stabilit...",
+        "value": 18.7,
+        "shap": -0.4433,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      },
+      {
+        "feature": "surface_pressure",
+        "label": "Low pressure means converging, rising air that produces clou...",
+        "value": 850.0,
+        "shap": -0.4339,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      },
+      {
+        "feature": "temp_max",
+        "label": "Daily peak heating drives afternoon convection and storm gro...",
+        "value": 33.9,
+        "shap": -0.3889,
+        "direction": "decreased",
+        "impact": "pushed away from heavy rain"
+      }
+    ],
+    "model_agreement_std": 0.0,
+    "heavy_rain_threshold_mm": 64.5,
+    "disclaimer": "Prototype built on public IMD/ERA5 data (2001-2020, Konkan coast). Not an operational ISRO forecasting system."
+  }
+}

@@ -1,10 +1,13 @@
-"""Phase 4 (local): explain one individual prediction with SHAP."""
+"""Phase 4 (local): explain one individual prediction with SHAP.
+
+Uses XGBoost's native TreeSHAP (pred_contribs) so the server needs NO shap
+package and NO pandas - keeping the deployment small. The SHAP values are the
+same ones the shap package would produce.
+"""
 import os
 import sys
 
 import numpy as np
-import pandas as pd
-import shap
 import xgboost as xgb
 
 sys.path.insert(0, os.path.join("src"))
@@ -16,20 +19,21 @@ _STATE = {}
 
 def get_model():
     if "model" not in _STATE:
-        model = xgb.XGBClassifier()
-        model.load_model(MODEL_PATH)
-        _STATE["model"] = model
-        _STATE["explainer"] = shap.TreeExplainer(model)
-    return _STATE["model"], _STATE["explainer"]
+        booster = xgb.Booster()
+        booster.load_model(MODEL_PATH)
+        _STATE["model"] = booster
+    return _STATE["model"]
 
 
 def explain_local(row):
-    """Return per-feature SHAP attributions for one prediction row."""
-    _, explainer = get_model()
-    X = pd.DataFrame([row])[MODEL_FEATURES].astype(float)
-    values = explainer.shap_values(X, check_additivity=False)[0]
+    """Return per-feature SHAP attributions via XGBoost native TreeSHAP."""
+    model = get_model()
+    X = np.array([[float(row[f]) for f in MODEL_FEATURES]])
+    dmat = xgb.DMatrix(X, feature_names=MODEL_FEATURES)
+    contribs = model.predict(dmat, pred_contribs=True)[0]
+
     items = []
-    for feature, value, sh in zip(MODEL_FEATURES, X.iloc[0].values, values):
+    for feature, value, sh in zip(MODEL_FEATURES, X[0], contribs[:-1]):
         items.append({
             "feature": feature,
             "value": round(float(value), 2),
