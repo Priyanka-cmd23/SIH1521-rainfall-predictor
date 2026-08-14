@@ -1,9 +1,8 @@
-# 🌧️ SIH1521 — XAI-based Heavy Rainfall Predictor
+# 🌧️ XAI-based Heavy Rainfall Predictor
 
-A beginner-friendly prototype for the Smart India Hackathon problem **SIH1521
-(XAI-based Heavy Rainfall Predictor, organization: ISRO)**. It predicts the
-probability of heavy rainfall from atmospheric data, explains **why** with SHAP,
-scores prediction reliability, and shows everything on a web dashboard.
+A beginner-friendly prototype that predicts the probability of heavy rainfall
+from atmospheric data, explains **why** with SHAP, scores prediction reliability,
+and shows everything on a web dashboard.
 
 > **Prototype built using publicly available atmospheric/rainfall data, with an
 > INSAT-compatible pipeline designed for future integration.**

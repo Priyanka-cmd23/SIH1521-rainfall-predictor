@@ -1,4 +1,4 @@
-# 🎤 SIH1521 Demo Script (5-minute live walkthrough)
+# 🎤 Demo Script (5-minute live walkthrough)
 
 Setup: server already running, dashboard open in fullscreen, desktop clean.
 

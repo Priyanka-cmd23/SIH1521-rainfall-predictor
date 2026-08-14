@@ -1,4 +1,4 @@
-# System Architecture — SIH1521
+# System Architecture
 
 > To get a PNG/PDF: open https://mermaid.live , paste the block below, and
 > export the image. (Free, no account needed.) Alternatively copy into

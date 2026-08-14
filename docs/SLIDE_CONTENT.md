@@ -1,7 +1,7 @@
-# 📊 SIH1521 — One-page slide content (copy-paste ready)
+# 📊 One-page slide content (copy-paste ready)
 
 ## Slide 1 — Title
-**XAI-based Heavy Rainfall Predictor (SIH1521 · ISRO)**
+**XAI-based Heavy Rainfall Predictor**
 "Predict, Explain, Trust" — prototype on public data, INSAT-ready.
 
 ## Slide 2 — Why + Idea

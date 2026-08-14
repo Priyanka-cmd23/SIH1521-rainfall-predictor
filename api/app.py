@@ -29,7 +29,7 @@ from xai.explain import explain_local  # noqa: E402
 BASE = Path(__file__).resolve().parent.parent
 MODELS_DIR = BASE / "models"
 
-app = FastAPI(title="Heavy Rainfall Predictor (SIH1521)", version="0.1.0")
+app = FastAPI(title="Heavy Rainfall Predictor", version="0.1.0")
 app.add_middleware(
     CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
 )
