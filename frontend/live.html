@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Forecast | Heavy Rainfall Predictor</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <h1>🌧️ Heavy Rainfall Predictor</h1>
+  <nav>
+    <a href="index.html">Predict</a>
+    <a href="insights.html">Insights</a>
+    <a href="live.html" class="active">Live Forecast</a>
+  </nav>
+  <button id="themeToggle">🌙 Dark</button>
+</header>
+<main>
+  <div class="grid">
+    <div class="card">
+      <h2>🌐 Live Weather & Forecast (Open-Meteo API)</h2>
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <input id="city" value="Mumbai" style="flex:1;min-width:200px" placeholder="Type a city…">
+        <button onclick="forecast()" style="white-space:nowrap">Get Live Forecast</button>
+      </div>
+      <div class="samples">
+        <button class="ghost" onclick="setCity('Mumbai')">Mumbai</button>
+        <button class="ghost" onclick="setCity('Bhubaneswar')">Bhubaneswar</button>
+        <button class="ghost" onclick="setCity('Puri')">Puri</button>
+        <button class="ghost" onclick="setCity('Kochi')">Kochi</button>
+        <button class="ghost" onclick="setCity('Chennai')">Chennai</button>
+        <button class="ghost" onclick="setCity('Kolkata')">Kolkata</button>
+      </div>
+      <div id="status"></div>
+
+      <h2 style="margin-top:24px">Current Conditions</h2>
+      <div id="currentConditions" style="font-size:14px;color:var(--mut)">Enter a city and click "Get Live Forecast"</div>
+
+      <h2 style="margin-top:20px">Prediction from Live Data</h2>
+      <div class="risk" id="risk">—</div>
+      <div class="prob" id="prob">–<small>%</small></div>
+      <div class="bar"><div id="probBar" style="width:0%"></div></div>
+      <div id="predLabel" style="text-align:center;font-size:14px;color:var(--mut);margin-bottom:12px"></div>
+      <div style="margin-top:14px"><span class="rel" id="rel">INDICATOR —</span></div>
+      <ul class="why" id="relReasons"></ul>
+      <div class="note" id="disc"></div>
+    </div>
+
+    <div class="card">
+      <h2>Why this indicator? (Live SHAP-style)</h2>
+      <div id="shapChart"><div class="note">Fetch live data to see feature contributions.</div></div>
+      <div class="note" id="shapNote"></div>
+    </div>
+
+    <div class="card">
+      <h2>7-Day Precipitation Forecast</h2>
+      <div id="forecastChart"><div class="note">Fetch live data to see forecast.</div></div>
+    </div>
+  </div>
+</main>
+<footer>Live data from Open-Meteo.com · Free weather API · Not an operational forecasting system</footer>
+<script src="app.js"></script>
+<script>
+function setCity(name){ document.getElementById("city").value = name; forecast(); }
+
+async function forecast(){
+  const city = document.getElementById("city").value.trim();
+  if (!city){ document.getElementById("status").innerHTML = '<span class="err">Enter a city</span>'; return; }
+  document.getElementById("status").textContent = "Fetching live weather for " + city + "…";
+  try {
+    if (IS_LOCAL){
+      const r = await fetch("/forecast?city=" + encodeURIComponent(city));
+      if (!r.ok){ const e = await r.json(); throw new Error(e.detail || r.status); }
+      const d = await r.json();
+      document.getElementById("predLabel").textContent = "Live: " + d.location + " · " + d.current_conditions + " · data: " + d.data_source;
+      document.getElementById("currentConditions").textContent = d.location + " · " + d.current_conditions + " · " + d.data_source;
+      applyResult(d);
+      drawForecastChart(d.daily_forecast);
+      return;
+    } else {
+      const g = await (await fetch("https://geocoding-api.open-meteo.com/v1/search?name=" +
+        encodeURIComponent(city) + "&count=1")).json();
+      if (!g.results || !g.results.length) throw new Error("City not found");
+      const loc = g.results[0];
+      const f = await (await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + loc.latitude +
+        "&longitude=" + loc.longitude + "&current=temperature_2m,relative_humidity_2m,cloud_cover,wind_speed_10m,surface_pressure,is_day,weather_code" +
+        "&daily=precipitation_sum&past_days=1&forecast_days=7&timezone=auto")).json();
+      const cur = f.current;
+      const wc = cur.weather_code;
+      const dew = cur.temperature_2m - (100 - cur.relative_humidity_2m)/5;
+      const h = liveHeuristic({
+        relative_humidity: cur.relative_humidity_2m,
+        cloud_cover: cur.cloud_cover,
+        rain_lag1: f.daily.precipitation_sum[0] || 0,
+        wind_speed_mean: cur.wind_speed_kmh || cur.wind_speed_10m
+      });
+      document.getElementById("predLabel").textContent = "Live: " + loc.name + " · " +
+        cur.temperature_2m + "°C, RH " + cur.relative_humidity_2m + "%, cloud " + cur.cloud_cover +
+        "%, wind " + (cur.wind_speed_kmh || cur.wind_speed_10m) + " km/h (weather code " + wc + ")";
+      document.getElementById("currentConditions").textContent = loc.name + " · " + cur.temperature_2m + "°C, RH " + cur.relative_humidity_2m + "%, cloud " + cur.cloud_cover + "%, wind " + (cur.wind_speed_kmh || cur.wind_speed_10m) + " km/h";
+      document.getElementById("status").textContent = "Hosted demo mode: full ML prediction needs the API server (see README). Showing a simple indicator from live conditions instead.";
+      const rel = h.score >= 3 ? "HIGH" : h.score >= 2 ? "MEDIUM" : "LOW";
+      document.getElementById("risk").textContent = rel + " RISK";
+      document.getElementById("risk").className = "risk " + rel;
+      document.getElementById("prob").innerHTML = "—<small>%</small>";
+      document.getElementById("probBar").style.width = "0%";
+      document.getElementById("rel").textContent = "INDICATOR " + rel;
+      document.getElementById("rel").className = "rel " + rel;
+      document.getElementById("relReasons").innerHTML = (h.why.length ? h.why : ["no elevated indicators"]).map(r => "<li>• " + r + "</li>").join("");
+      document.getElementById("disc").textContent = "Rule-based indicator computed in your browser from real Open-Meteo data. It is NOT the trained ML model — run the API locally for SHAP + calibrated probability.";
+      drawShap([{feature:"relative_humidity", value:cur.relative_humidity_2m, shap:0.6},
+                {feature:"cloud_cover", value:cur.cloud_cover, shap:0.4},
+                {feature:"rain_lag1", value:(f.daily.precipitation_sum[0]||0), shap:0.2}]);
+      document.getElementById("shapNote").textContent = "Live-condition indicators (not ML SHAP). Full SHAP explanations are available when running the API locally.";
+      drawForecastChart(f.daily);
+    }
+  } catch(e){
+    document.getElementById("status").innerHTML = '<span class="err">Forecast error: ' + esc(e.message) + '</span>';
+  }
+}
+
+function drawForecastChart(daily){
+  const container = document.getElementById("forecastChart");
+  if (!daily || !daily.precipitation_sum) { container.innerHTML = '<div class="note">No forecast data available</div>'; return; }
+  const labels = daily.time;
+  const values = daily.precipitation_sum;
+  const max = Math.max(...values, 1);
+  let html = '<div style="display:flex;gap:8px;align-items:flex-end;height:180px;padding:10px 0">';
+  labels.forEach((date, i) => {
+    const h = (values[i]/max)*160;
+    const isHeavy = values[i] > 50;
+    html += `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div style="width:100%;height:${h}px;background:${isHeavy?'var(--red)':'var(--primary)'};border-radius:4px 4px 0 0;transition:height 0.3s"></div>
+      <span style="font-size:10px;color:var(--mut)">${date.slice(5)}</span>
+      <span style="font-size:11px;font-weight:600;color:${isHeavy?'var(--red)':'var(--txt)'}">${values[i].toFixed(1)}mm</span>
+    </div>`;
+  });
+  html += '</div><div class="note">Bars show daily precipitation sum (mm). Red = heavy rain threshold (>50mm).</div>';
+  container.innerHTML = html;
+}
+</script>
+</body>
+</html>

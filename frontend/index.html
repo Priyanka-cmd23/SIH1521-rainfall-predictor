@@ -3,233 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Heavy Rainfall Predictor (XAI-based)</title>
-<style>
-  :root { --bg:#0d1420; --card:#161f31; --line:#26334d; --txt:#e6ecf5; --mut:#8fa0bd;
-          --red:#ff5c5c; --amber:#ffb020; --green:#2fd07a; --blue:#4aa3ff; }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  body { background:var(--bg); color:var(--txt); font-family:"Segoe UI",system-ui,Arial,sans-serif; padding:24px; }
-  header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px; }
-  h1 { font-size:20px; } h1 span { color:var(--blue); }
-  .tag { background:#1c2942; border:1px solid var(--line); color:var(--mut); padding:6px 12px; border-radius:20px; font-size:12px; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:16px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
-  .card h2 { font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--mut); margin-bottom:12px; }
-  .risk { font-size:34px; font-weight:700; }
-  .risk.HIGH { color:var(--red); } .risk.MEDIUM { color:var(--amber); } .risk.LOW { color:var(--green); }
-  .prob { font-size:46px; font-weight:800; color:var(--txt); }
-  .prob small { font-size:18px; color:var(--mut); }
-  .bar { height:10px; background:#1c2942; border-radius:6px; overflow:hidden; margin:10px 0; }
-  .bar div { height:100%; background:linear-gradient(90deg,var(--amber),var(--red)); }
-  label { display:block; font-size:12px; color:var(--mut); margin:8px 0 2px; }
-  input, select { width:100%; background:#0d1420; border:1px solid var(--line); color:var(--txt);
-                  border-radius:6px; padding:7px 9px; font-size:13px; }
-  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  button { background:var(--blue); color:#fff; border:0; border-radius:8px; padding:10px 14px;
-           font-weight:600; cursor:pointer; margin-top:12px; }
-  button.ghost { background:#1c2942; border:1px solid var(--line); color:var(--mut); font-weight:500; margin:0; }
-  .samples { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-  .rel { display:inline-block; padding:6px 14px; border-radius:20px; font-weight:700; font-size:16px; }
-  .rel.HIGH { background:rgba(47,208,122,.15); color:var(--green); }
-  .rel.MEDIUM { background:rgba(255,176,32,.15); color:var(--amber); }
-  .rel.LOW { background:rgba(255,92,92,.15); color:var(--red); }
-  ul.why { margin-top:10px; list-style:none; }
-  ul.why li { font-size:13px; padding:6px 0; border-bottom:1px dashed var(--line); display:flex; justify-content:space-between; gap:10px; }
-  ul.why .up { color:var(--red); } ul.why .down { color:var(--blue); }
-  svg { width:100%; }
-  table { width:100%; border-collapse:collapse; font-size:13px; }
-  td, th { padding:6px 8px; text-align:left; border-bottom:1px solid var(--line); }
-  td.num { text-align:right; }
-  .note { font-size:11px; color:var(--mut); margin-top:10px; line-height:1.5; }
-  .badge { font-size:11px; background:#1c2942; border:1px solid var(--line); color:var(--mut);
-           padding:3px 8px; border-radius:4px; margin:0 4px 4px 0; display:inline-block; }
-  #status { font-size:12px; color:var(--mut); margin-top:10px; }
-  .err { color:var(--red); font-size:12px; margin-top:10px; }
-</style>
+<title>Heavy Rainfall Predictor</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header>
   <h1>🌧️ Heavy Rainfall Predictor</h1>
-  <span class="tag">Prototype · Public IMD + ERA5 data · XAI-driven</span>
-  <span class="tag" id="modeTag" style="border-color:var(--amber);color:var(--amber)">checking mode…</span>
+  <nav>
+    <a href="index.html" class="active">Predict</a>
+    <a href="insights.html">Insights</a>
+    <a href="live.html">Live Forecast</a>
+  </nav>
+  <button id="themeToggle">🌙 Dark</button>
 </header>
-
-<div class="grid">
-  <div class="card">
-    <h2>Weather input</h2>
-    <div class="row2">
-      <div><label>Relative humidity (%)</label><input id="relative_humidity" type="number" step="any"></div>
-      <div><label>Cloud cover (%)</label><input id="cloud_cover" type="number" step="any"></div>
-      <div><label>Dew point (°C)</label><input id="dew_point" type="number" step="any"></div>
-      <div><label>Surface pressure (hPa)</label><input id="surface_pressure" type="number" step="any"></div>
-      <div><label>Temp mean (°C)</label><input id="temp_mean" type="number" step="any"></div>
-      <div><label>Temp max (°C)</label><input id="temp_max" type="number" step="any"></div>
-      <div><label>Temp min (°C)</label><input id="temp_min" type="number" step="any"></div>
-      <div><label>Wind speed mean (km/h)</label><input id="wind_speed_mean" type="number" step="any"></div>
-      <div><label>Wind speed max (km/h)</label><input id="wind_speed_max" type="number" step="any"></div>
-      <div><label>Wind gust (km/h)</label><input id="wind_gust" type="number" step="any"></div>
-      <div><label>Wind direction (°)</label><input id="wind_direction" type="number" step="any"></div>
-      <div><label>Yesterday's rain (mm)</label><input id="rain_lag1" type="number" step="any"></div>
+<main>
+  <div class="grid">
+    <div class="card">
+      <h2>Weather Input</h2>
+      <div class="row2">
+        <div><label>Relative humidity (%)</label><input id="relative_humidity" type="number" step="any"></div>
+        <div><label>Cloud cover (%)</label><input id="cloud_cover" type="number" step="any"></div>
+        <div><label>Dew point (°C)</label><input id="dew_point" type="number" step="any"></div>
+        <div><label>Surface pressure (hPa)</label><input id="surface_pressure" type="number" step="any"></div>
+        <div><label>Temp mean (°C)</label><input id="temp_mean" type="number" step="any"></div>
+        <div><label>Temp max (°C)</label><input id="temp_max" type="number" step="any"></div>
+        <div><label>Temp min (°C)</label><input id="temp_min" type="number" step="any"></div>
+        <div><label>Wind speed mean (km/h)</label><input id="wind_speed_mean" type="number" step="any"></div>
+        <div><label>Wind speed max (km/h)</label><input id="wind_speed_max" type="number" step="any"></div>
+        <div><label>Wind gust (km/h)</label><input id="wind_gust" type="number" step="any"></div>
+        <div><label>Wind direction (°)</label><input id="wind_direction" type="number" step="any"></div>
+        <div><label>Yesterday's rain (mm)</label><input id="rain_lag1" type="number" step="any"></div>
+      </div>
+      <label>Day of year</label><input id="day_of_year" type="number">
+      <button onclick="predict()">Get Prediction</button>
+      <div class="samples">
+        <button class="ghost" onclick="loadCase('heavy_rain_day')">Heavy rain case</button>
+        <button class="ghost" onclick="loadCase('normal_day')">Normal day</button>
+        <button class="ghost" onclick="loadCase('unusual_oceanic_input')">Unusual input</button>
+      </div>
+      <div id="status"></div>
     </div>
-    <label>Day of year</label><input id="day_of_year" type="number">
-    <button onclick="predict()">Get Prediction</button>
-    <div class="samples">
-      <button class="ghost" onclick="loadCase('heavy_rain_day')">Heavy rain case</button>
-      <button class="ghost" onclick="loadCase('normal_day')">Normal day</button>
-      <button class="ghost" onclick="loadCase('unusual_oceanic_input')">Unusual input</button>
+
+    <div class="card">
+      <h2>Prediction</h2>
+      <div class="risk" id="risk">—</div>
+      <div class="prob" id="prob">–<small>%</small></div>
+      <div class="bar"><div id="probBar" style="width:0%"></div></div>
+      <div id="predLabel" style="text-align:center;font-size:14px;color:var(--mut);margin-bottom:12px"></div>
+      <div style="margin-top:14px"><span class="rel" id="rel">RELIABILITY —</span></div>
+      <ul class="why" id="relReasons"></ul>
+      <div class="note" id="disc"></div>
     </div>
-    <h2 style="margin-top:18px">🌐 Live forecast (free Open-Meteo API)</h2>
-    <div style="display:flex;gap:8px">
-      <input id="city" value="Mumbai" style="flex:1" placeholder="Type a city…">
-      <button onclick="forecast()" style="white-space:nowrap">Go</button>
+
+    <div class="card">
+      <h2>Why this prediction? (SHAP)</h2>
+      <div id="shapChart"><div class="note">Run a prediction to see feature contributions.</div></div>
+      <div class="note" id="shapNote"></div>
     </div>
-    <div class="samples">
-      <button class="ghost" onclick="setCity('Mumbai')">Mumbai</button>
-      <button class="ghost" onclick="setCity('Bhubaneswar')">Bhubaneswar</button>
-      <button class="ghost" onclick="setCity('Puri')">Puri</button>
-      <button class="ghost" onclick="setCity('Kochi')">Kochi</button>
-    </div>
-    <div id="status"></div>
   </div>
-
-  <div class="card">
-    <h2>Prediction</h2>
-    <div class="risk" id="risk">—</div>
-    <div class="prob" id="prob">–<small>%</small></div>
-    <div class="bar"><div id="probBar" style="width:0%"></div></div>
-    <div id="predLabel" style="font-size:14px;color:var(--mut)"></div>
-    <div style="margin-top:14px"><span class="rel" id="rel">RELIABILITY —</span></div>
-    <ul class="why" id="relReasons"></ul>
-    <div class="note" id="disc"></div>
-  </div>
-
-  <div class="card">
-    <h2>Why this prediction? (SHAP)</h2>
-    <div id="shapChart"><div class="note">Run a prediction to see feature contributions.</div></div>
-    <div class="note" id="shapNote"></div>
-  </div>
-
-  <div class="card">
-    <h2>Global feature importance</h2>
-    <div id="globalChart"></div>
-  </div>
-
-  <div class="card">
-    <h2>Model performance</h2>
-    <table id="perfTable"></table>
-    <h2 style="margin-top:16px">Confusion matrix (test)</h2>
-    <table id="cmTable"></table>
-    <div class="note">POD=probability of detection · FAR=false-alarm ratio · CSI=critical success index.
-      Heavy rain is rare (~2% of days) so false alarms are high while detection stays high.</div>
-  </div>
-
-  <div class="card">
-    <h2>INSAT-3D/3DR Integration Ready</h2>
-    <p style="font-size:13px;color:var(--mut);line-height:1.6">
-      The feature pipeline is column-based: future satellite variables
-      (brightness temperature, cloud-top temperature, water-vapour channels)
-      can be added as new columns in the feature registry without redesigning
-      the model, XAI or reliability modules.</p>
-    <span class="badge">MVP data: IMD grid rain + ERA5 reanalysis</span>
-    <span class="badge">Future: INSAT-3D/3DR satellite</span>
-    <div class="note" style="margin-top:10px;color:var(--amber)">
-      No satellite data is shown here. This prototype does NOT claim to be an
-      operational ISRO forecasting system.</div>
-  </div>
-</div>
-
+</main>
+<footer>Prototype · Public IMD + ERA5 data · XAI-driven · Not an operational ISRO forecasting system</footer>
+<script src="app.js"></script>
 <script>
-const FEATURES = ["relative_humidity","cloud_cover","dew_point","surface_pressure","temp_mean",
-  "temp_max","temp_min","wind_speed_mean","wind_speed_max","wind_gust","wind_direction",
-  "rain_lag1","day_of_year"];
-
-let IS_LOCAL = true;
-
-function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
-
-function liveHeuristic(f){
-  let score = 0, why = [];
-  if (f.relative_humidity >= 80){ score++; why.push("humidity ≥80%"); }
-  if (f.cloud_cover >= 60){ score++; why.push("cloud cover ≥60%"); }
-  if (f.rain_lag1 > 20){ score++; why.push("yesterday's rain >20 mm"); }
-  if (f.wind_speed_mean >= 25){ score++; why.push("strong wind ≥25 km/h"); }
-  return { score, why };
-}
-
 async function loadCase(name){
   const samples = await (await fetch("/frontend/samples.json")).json();
   const c = samples.cases[name];
   FEATURES.forEach(f => { document.getElementById(f).value = c[f]; });
   predict();
-}
-
-function setCity(name){ document.getElementById("city").value = name; forecast(); }
-
-async function forecast(){
-  const city = document.getElementById("city").value.trim();
-  if (!city){ document.getElementById("status").innerHTML = '<span class="err">Enter a city</span>'; return; }
-  document.getElementById("status").textContent = "Fetching live weather for " + city + "…";
-  try {
-    if (IS_LOCAL){
-      const r = await fetch("/forecast?city=" + encodeURIComponent(city));
-      if (!r.ok){ const e = await r.json(); throw new Error(e.detail || r.status); }
-      const d = await r.json();
-      document.getElementById("predLabel").textContent = "Live: " + d.location + " · " + d.current_conditions +
-        " · data: " + d.data_source;
-      applyResult(d);
-    } else {
-      const g = await (await fetch("https://geocoding-api.open-meteo.com/v1/search?name=" +
-        encodeURIComponent(city) + "&count=1")).json();
-      if (!g.results || !g.results.length) throw new Error("City not found");
-      const loc = g.results[0];
-      const f = await (await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + loc.latitude +
-        "&longitude=" + loc.longitude + "&current=temperature_2m,relative_humidity_2m,cloud_cover,wind_speed_10m,surface_pressure,is_day,weather_code" +
-        "&daily=precipitation_sum&past_days=1&forecast_days=1&timezone=auto")).json();
-      const cur = f.current;
-      const wc = cur.weather_code;
-      const dew = cur.temperature_2m - (100 - cur.relative_humidity_2m)/5;
-      const h = liveHeuristic({
-        relative_humidity: cur.relative_humidity_2m,
-        cloud_cover: cur.cloud_cover,
-        rain_lag1: f.daily.precipitation_sum[0] || 0,
-        wind_speed_mean: cur.wind_speed_kmh || cur.wind_speed_10m
-      });
-      document.getElementById("predLabel").textContent = "Live: " + loc.name + " · " +
-        cur.temperature_2m + "°C, RH " + cur.relative_humidity_2m + "%, cloud " + cur.cloud_cover +
-        "%, wind " + (cur.wind_speed_kmh || cur.wind_speed_10m) + " km/h (weather code " + wc + ")";
-      document.getElementById("status").textContent = "Hosted demo mode: full ML prediction needs the API server (see README). " +
-        "Showing a simple indicator from live conditions instead.";
-      const rel = h.score >= 3 ? "HIGH" : h.score >= 2 ? "MEDIUM" : "LOW";
-      document.getElementById("risk").textContent = rel + " RISK";
-      document.getElementById("risk").className = "risk " + rel;
-      document.getElementById("prob").innerHTML = "—<small>%</small>";
-      document.getElementById("probBar").style.width = "0%";
-      document.getElementById("rel").textContent = "INDICATOR " + rel;
-      document.getElementById("rel").className = "rel " + rel;
-      document.getElementById("relReasons").innerHTML = (h.why.length ? h.why : ["no elevated indicators"]).map(r => "<li>• " + r + "</li>").join("");
-      document.getElementById("disc").textContent = "Rule-based indicator computed in your browser from real Open-Meteo data. " +
-        "It is NOT the trained ML model — run the API locally for SHAP + calibrated probability.";
-      drawShap([{feature:"relative_humidity", value:cur.relative_humidity_2m, shap:0.6},
-                {feature:"cloud_cover", value:cur.cloud_cover, shap:0.4},
-                {feature:"rain_lag1", value:(f.daily.precipitation_sum[0]||0), shap:0.2}]);
-      document.getElementById("shapNote").textContent = "Live-condition indicators (not ML SHAP). Full SHAP explanations are available when running the API locally.";
-    }
-  } catch(e){
-    document.getElementById("status").innerHTML = '<span class="err">Forecast error: ' + esc(e.message) + '</span>';
-  }
-}
-
-function applyResult(d){
-  document.getElementById("risk").textContent = d.risk_level + " RISK";
-  document.getElementById("risk").className = "risk " + d.risk_level;
-  document.getElementById("prob").innerHTML = (d.probability*100).toFixed(0) + "<small>%</small>";
-  document.getElementById("probBar").style.width = (d.probability*100).toFixed(0) + "%";
-  document.getElementById("rel").textContent = "RELIABILITY " + d.reliability.reliability;
-  document.getElementById("rel").className = "rel " + d.reliability.reliability;
-  document.getElementById("relReasons").innerHTML = d.reliability.reasons.map(r => "<li>• " + esc(r) + "</li>").join("");
-  document.getElementById("disc").textContent = d.disclaimer;
-  drawShap(d.explanation);
-  document.getElementById("status").textContent = "Ensemble agreement (std): " + d.model_agreement_std + " · reliability OOD score: " + d.reliability.ood_score + " · OOD flag: " + d.reliability.ood_flag;
 }
 
 async function predict(){
@@ -256,62 +96,6 @@ async function predict(){
     document.getElementById("status").innerHTML = '<span class="err">Error: ' + esc(e.message) + '</span>';
   }
 }
-
-async function applyDemoCase(){
-  const d = (await (await fetch("/frontend/demo_cases.json")).json())["heavy_rain_day"];
-  document.getElementById("predLabel").textContent = "Prediction (precomputed): " + d.prediction +
-    " · heavy-rain threshold >" + d.heavy_rain_threshold_mm + " mm/day";
-  applyResult(d);
-}
-
-function drawShap(exps){
-  const max = Math.max(...exps.map(e => Math.abs(e.shap)), 0.001);
-  let html = "";
-  exps.forEach(e => {
-    const w = Math.abs(e.shap)/max*100;
-    const up = e.shap >= 0;
-    html += `<div style="margin-bottom:8px">
-      <div style="display:flex;justify-content:space-between;font-size:12px">
-        <span>${esc(e.feature)} <span style="color:var(--mut)">(${e.value})</span></span>
-        <span class="${up?'up':'down'}">${up?'+':''}${e.shap.toFixed(3)}</span></div>
-      <div class="bar"><div style="width:${w.toFixed(0)}%;background:${up?'var(--red)':'var(--blue)'}"></div></div></div>`;
-  });
-  document.getElementById("shapChart").innerHTML = html;
-  document.getElementById("shapNote").textContent = "Red pushes towards heavy rain, blue pushes away. Contributions are true SHAP values from the model.";
-}
-
-async function loadMetrics(){
-  let d;
-  try {
-    const r = await fetch("/metrics");
-    if (!r.ok) throw new Error();
-    d = await r.json();
-  } catch(e){
-    IS_LOCAL = false;
-    document.getElementById("modeTag").textContent = "HOSTED DEMO MODE";
-    d = await (await fetch("/frontend/demo_metrics.json")).json();
-  }
-  const m = d.metrics.test;
-  const rows = [["Accuracy", m.accuracy], ["Precision", m.precision], ["Recall", m.recall],
-    ["F1-score", m.f1], ["ROC-AUC", m.roc_auc], ["POD", m.pod], ["FAR", m.far], ["CSI", m.csi]];
-  document.getElementById("perfTable").innerHTML = rows.map(r =>
-    `<tr><td>${r[0]}</td><td class="num">${r[1].toFixed(3)}</td></tr>`).join("")
-    + `<tr><td>Samples</td><td class="num">${m.n.toLocaleString()} (${m.n_heavy.toLocaleString()} heavy)</td></tr>`;
-  const cm = m.confusion_matrix;
-  document.getElementById("cmTable").innerHTML =
-    `<tr><th></th><th>Pred: no</th><th>Pred: heavy</th></tr>
-     <tr><td>Actual: no</td><td class="num">${cm.tn.toLocaleString()}</td><td class="num">${cm.fp.toLocaleString()}</td></tr>
-     <tr><td>Actual: heavy</td><td class="num">${cm.fn.toLocaleString()}</td><td class="num">${cm.tp.toLocaleString()}</td></tr>`;
-  const gi = d.global_shap.importance;
-  const gmax = Math.max(...gi.map(i => i.importance));
-  document.getElementById("globalChart").innerHTML = gi.slice(0,10).map(i =>
-    `<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:12px">
-      <span style="width:130px">${esc(i.feature)}</span>
-      <div class="bar" style="flex:1;margin:0"><div style="width:${i.importance/gmax*100}%;background:var(--blue)"></div></div>
-      <span style="width:48px;text-align:right;color:var(--mut)">${i.importance.toFixed(3)}</span></div>`).join("");
-}
-loadMetrics();
-setTimeout(() => { if (!IS_LOCAL) applyDemoCase(); }, 500);
 </script>
 </body>
 </html>

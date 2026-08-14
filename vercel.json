@@ -5,7 +5,11 @@
   ],
   "routes": [
     { "src": "/", "dest": "/frontend/index.html" },
-    { "src": "/frontend(/)?", "dest": "/frontend/index.html" },
+    { "src": "/index.html", "dest": "/frontend/index.html" },
+    { "src": "/insights.html", "dest": "/frontend/insights.html" },
+    { "src": "/live.html", "dest": "/frontend/live.html" },
+    { "src": "/styles.css", "dest": "/frontend/styles.css" },
+    { "src": "/app.js", "dest": "/frontend/app.js" },
     { "src": "/frontend/(.*)", "dest": "/frontend/$1" }
   ]
 }

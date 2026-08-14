@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Model Insights | Heavy Rainfall Predictor</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <h1>🌧️ Heavy Rainfall Predictor</h1>
+  <nav>
+    <a href="index.html">Predict</a>
+    <a href="insights.html" class="active">Insights</a>
+    <a href="live.html">Live Forecast</a>
+  </nav>
+  <button id="themeToggle">🌙 Dark</button>
+</header>
+<main>
+  <div class="grid">
+    <div class="card">
+      <h2>Model Performance (Test Set)</h2>
+      <table id="perfTable"></table>
+      <h2 style="margin-top:20px">Confusion Matrix (Test)</h2>
+      <table id="cmTable"></table>
+      <div class="note">POD=probability of detection · FAR=false-alarm ratio · CSI=critical success index.<br>Heavy rain is rare (~2% of days) so false alarms are high while detection stays high.</div>
+    </div>
+
+    <div class="card">
+      <h2>Global Feature Importance (SHAP)</h2>
+      <div id="globalChart"></div>
+      <div class="note">Mean absolute SHAP values across test set. Higher = more influence on model decisions.</div>
+    </div>
+
+    <div class="card">
+      <h2>How SHAP Works</h2>
+      <p style="font-size:14px;color:var(--mut);line-height:1.7;margin-bottom:16px">
+        SHAP (SHapley Additive exPlanations) assigns each feature an importance value for a specific prediction.
+        It's based on cooperative game theory — each feature's contribution is computed by averaging its marginal
+        contribution across all possible feature coalitions.
+      </p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+        <div class="card" style="padding:16px;text-align:center">
+          <div style="font-size:2rem;margin-bottom:8px">🔴</div>
+          <strong style="color:var(--red)">Positive SHAP</strong>
+          <p style="font-size:13px;color:var(--mut);margin-top:4px">Pushes prediction toward heavy rain</p>
+        </div>
+        <div class="card" style="padding:16px;text-align:center">
+          <div style="font-size:2rem;margin-bottom:8px">🔵</div>
+          <strong style="color:var(--primary)">Negative SHAP</strong>
+          <p style="font-size:13px;color:var(--mut);margin-top:4px">Pushes prediction away from heavy rain</p>
+        </div>
+        <div class="card" style="padding:16px;text-align:center">
+          <div style="font-size:2rem;margin-bottom:8px">⚖️</div>
+          <strong>Base Value</strong>
+          <p style="font-size:13px;color:var(--mut);margin-top:4px">Average model output (log-odds)</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>INSAT-3D/3DR Integration Ready</h2>
+      <p style="font-size:14px;color:var(--mut);line-height:1.7">
+        The feature pipeline is column-based: future satellite variables
+        (brightness temperature, cloud-top temperature, water-vapour channels)
+        can be added as new columns in the feature registry without redesigning
+        the model, XAI or reliability modules.
+      </p>
+      <span class="badge">MVP data: IMD grid rain + ERA5 reanalysis</span>
+      <span class="badge">Future: INSAT-3D/3DR satellite</span>
+      <div class="note" style="margin-top:12px;color:var(--amber)">
+        No satellite data is shown here. This prototype does NOT claim to be an
+        operational ISRO forecasting system.
+      </div>
+    </div>
+  </div>
+</main>
+<footer>Prototype · Public IMD + ERA5 data · XAI-driven · Not an operational ISRO forecasting system</footer>
+<script src="app.js"></script>
+</body>
+</html>
