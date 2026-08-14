@@ -1,0 +1,57 @@
+{
+  "base_value": 0.10206785798072815,
+  "importance": [
+    {
+      "feature": "rain_lag1",
+      "importance": 2.070880174636841
+    },
+    {
+      "feature": "relative_humidity",
+      "importance": 1.5065561532974243
+    },
+    {
+      "feature": "cloud_cover",
+      "importance": 0.9086164832115173
+    },
+    {
+      "feature": "dew_point",
+      "importance": 0.485733300447464
+    },
+    {
+      "feature": "surface_pressure",
+      "importance": 0.36991918087005615
+    },
+    {
+      "feature": "day_of_year",
+      "importance": 0.3327281177043915
+    },
+    {
+      "feature": "temp_max",
+      "importance": 0.26237234473228455
+    },
+    {
+      "feature": "temp_min",
+      "importance": 0.1981542408466339
+    },
+    {
+      "feature": "wind_speed_mean",
+      "importance": 0.19258520007133484
+    },
+    {
+      "feature": "wind_direction",
+      "importance": 0.17198969423770905
+    },
+    {
+      "feature": "wind_gust",
+      "importance": 0.1466417759656906
+    },
+    {
+      "feature": "wind_speed_max",
+      "importance": 0.11776085197925568
+    },
+    {
+      "feature": "temp_mean",
+      "importance": 0.1134810522198677
+    }
+  ]
+}

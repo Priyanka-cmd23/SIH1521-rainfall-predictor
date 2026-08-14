@@ -1,0 +1,12 @@
+pandas
+numpy
+xarray
+netcdf4
+requests
+xgboost
+scikit-learn
+shap
+fastapi
+uvicorn
+pytest
+httpx

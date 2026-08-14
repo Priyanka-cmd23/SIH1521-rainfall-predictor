@@ -1,0 +1,15 @@
+[
+  "temp_mean",
+  "temp_max",
+  "temp_min",
+  "relative_humidity",
+  "dew_point",
+  "surface_pressure",
+  "cloud_cover",
+  "wind_speed_mean",
+  "wind_speed_max",
+  "wind_gust",
+  "wind_direction",
+  "rain_lag1",
+  "day_of_year"
+]

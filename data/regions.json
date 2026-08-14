@@ -1,0 +1,15 @@
+{
+  "regions": {
+    "maharashtra_konkan": {"state": "Maharashtra", "lat": [15.5, 20.0], "lon": [72.5, 74.5], "note": "Konkan coast Mumbai->Goa"},
+    "odisha_coast": {"state": "Odisha", "lat": [18.5, 22.5], "lon": [84.0, 87.5], "note": "Odisha coast Balasore->Ganjam"},
+    "kerala_coast": {"state": "Kerala", "lat": [8.5, 12.5], "lon": [74.5, 76.5], "note": "Kerala coast"}
+  },
+  "cities": [
+    {"name": "Mumbai", "state": "Maharashtra", "lat": 19.076, "lon": 72.8777},
+    {"name": "Ratnagiri", "state": "Maharashtra", "lat": 16.9902, "lon": 73.3056},
+    {"name": "Bhubaneswar", "state": "Odisha", "lat": 20.2961, "lon": 85.8245},
+    {"name": "Puri", "state": "Odisha", "lat": 19.8135, "lon": 85.8312},
+    {"name": "Kochi", "state": "Kerala", "lat": 9.9312, "lon": 76.2673}
+  ],
+  "disclaimer": "The current trained model is built on Konkan-coast data. Live forecasts reuse the same model at any city as a prototype demonstration."
+}

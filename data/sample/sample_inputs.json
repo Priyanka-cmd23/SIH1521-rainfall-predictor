@@ -1,0 +1,49 @@
+{
+  "cases": {
+    "heavy_rain_day": {
+      "temp_mean": 27.2,
+      "temp_max": 29.6,
+      "temp_min": 25.9,
+      "relative_humidity": 92.0,
+      "dew_point": 25.8,
+      "surface_pressure": 1006.2,
+      "cloud_cover": 98.0,
+      "wind_speed_mean": 15.0,
+      "wind_speed_max": 19.8,
+      "wind_gust": 46.4,
+      "wind_direction": 209.0,
+      "rain_lag1": 30.37,
+      "day_of_year": 164.0
+    },
+    "normal_day": {
+      "temp_mean": 24.9,
+      "temp_max": 33.9,
+      "temp_min": 18.7,
+      "relative_humidity": 48.0,
+      "dew_point": 12.3,
+      "surface_pressure": 1016.1,
+      "cloud_cover": 11.0,
+      "wind_speed_mean": 7.5,
+      "wind_speed_max": 10.1,
+      "wind_gust": 26.3,
+      "wind_direction": 51.0,
+      "rain_lag1": 0.0,
+      "day_of_year": 1.0
+    },
+    "unusual_oceanic_input": {
+      "temp_mean": 45.0,
+      "temp_max": 33.9,
+      "temp_min": 18.7,
+      "relative_humidity": 5.0,
+      "dew_point": 12.3,
+      "surface_pressure": 850.0,
+      "cloud_cover": 11.0,
+      "wind_speed_mean": 7.5,
+      "wind_speed_max": 10.1,
+      "wind_gust": 26.3,
+      "wind_direction": 51.0,
+      "rain_lag1": 0.0,
+      "day_of_year": 1.0
+    }
+  }
+}

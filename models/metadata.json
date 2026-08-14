@@ -1,0 +1,54 @@
+{
+  "model_features": [
+    "temp_mean",
+    "temp_max",
+    "temp_min",
+    "relative_humidity",
+    "dew_point",
+    "surface_pressure",
+    "cloud_cover",
+    "wind_speed_mean",
+    "wind_speed_max",
+    "wind_gust",
+    "wind_direction",
+    "rain_lag1",
+    "day_of_year"
+  ],
+  "seeds": [
+    42,
+    7,
+    2020
+  ],
+  "scale_pos_weight": 47.71000354735722,
+  "n_train": 274627,
+  "feature_mean": {
+    "temp_mean": 25.54176355565913,
+    "temp_max": 30.290184504801058,
+    "temp_min": 21.66655645657565,
+    "relative_humidity": 72.69523389907037,
+    "dew_point": 19.491677074723174,
+    "surface_pressure": 968.0987623212575,
+    "cloud_cover": 52.70101628754638,
+    "wind_speed_mean": 9.651200719521386,
+    "wind_speed_max": 15.491050406551432,
+    "wind_gust": 35.29417682893524,
+    "wind_direction": 221.59012041787588,
+    "rain_lag1": 6.0810386193871695,
+    "day_of_year": 183.15244677325973
+  },
+  "feature_std": {
+    "temp_mean": 2.4077426010213427,
+    "temp_max": 3.2699757055133216,
+    "temp_min": 3.317594996954756,
+    "relative_humidity": 15.124906163349225,
+    "dew_point": 4.526084553650541,
+    "surface_pressure": 31.96980138684176,
+    "cloud_cover": 37.14316556059831,
+    "wind_speed_mean": 4.188157937886767,
+    "wind_speed_max": 4.673572243031028,
+    "wind_gust": 9.149342797007613,
+    "wind_direction": 98.68468204935151,
+    "rain_lag1": 17.624256683636244,
+    "day_of_year": 105.42321776664411
+  }
+}
